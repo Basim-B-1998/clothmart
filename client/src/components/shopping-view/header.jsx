@@ -2,25 +2,43 @@ import { House, LogOut, Menu ,ShoppingCart, User} from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { Sheet,SheetContent,SheetTrigger } from "@/components/ui/sheet"
 import { useDispatch, useSelector } from "react-redux"
-import { Button } from "../ui/button"
 import { shoppingViewHeaderMenuItems } from "@/config"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar"
 import { DropdownMenuItem, DropdownMenuSeparator } from "../ui/dropdown-menu"
 import { logoutUser } from "@/store/auth-slice"
- 
+import UserCartWrapper from "./cart-wrapper"
+import { useEffect, useState } from "react" 
+import { fetchCartItems } from "@/store/shop/cart-slice"
+import { Button } from "../ui/button"
+import { Label } from "../ui/label"
 
 function MenuItems(){
+
+  const navigate=useNavigate()
+
+  function handleNavigate(getcurrentMenuItem){
+    sessionStorage.removeItem('filters')
+    const currentFilter = getcurrentMenuItem.id !== 'home' ? 
+    {
+      category : [getcurrentMenuItem.id]
+  }  : null
+  sessionStorage.setItem('filters',JSON.stringify(currentFilter))
+  navigate(getcurrentMenuItem.path)
+}
+
   return <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
     {
       shoppingViewHeaderMenuItems.map(menuItem=> 
-      <Link className="text-sm font-medium" key={menuItem.id} to={menuItem.path}>{menuItem.label}</Link>)
+      <Label onClick={()=> handleNavigate(menuItem)} className="text-sm font-medium cursor-pointer" key={menuItem.id} >{menuItem.label}</Label>)
     }
   </nav>
 }
 
 function HeaderRightContent(){
   const {user}=useSelector(state=>state.auth)
+  const {cartItems} = useSelector(state=>state.shopCart)
+  const [openCartSheet , setOpenCartSheet] = useState(false)
   const navigate=useNavigate()
   const dispatch=useDispatch()
 
@@ -28,11 +46,25 @@ function HeaderRightContent(){
       dispatch(logoutUser())
   }
 
+  useEffect(()=>{
+    dispatch(fetchCartItems(user?.id))
+  },[dispatch])
+
   return <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-     <button variant="outline" size="icon">
+    <Sheet open={openCartSheet} onOpenChange={()=>setOpenCartSheet(false)}>
+    <Button 
+      onClick={()=>setOpenCartSheet(true)}
+       variant="outline" 
+       size="icon"
+    >
      <ShoppingCart className="w-6 h-6"/> 
      <span className="sr-only">User cart</span>
-    </button> 
+    </Button> 
+    <UserCartWrapper 
+    setOpenCartSheet={setOpenCartSheet}
+    cartItems={cartItems  && cartItems.items && cartItems.items.length > 0 ? cartItems.items : []}/>
+    </Sheet>
+     
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <Avatar className="bg-black">

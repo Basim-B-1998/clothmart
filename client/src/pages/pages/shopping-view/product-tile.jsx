@@ -3,10 +3,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { brandOptionsMap, categoryOptionsMap } from "@/config"
 
 
-function ShoppingProductTile({product}){
+function ShoppingProductTile({product,handleGetProductDetails,handleAddtoCart}){
   return(
       <Card className="w-full max-w-sm mx-auto">
-        <div>
+        <div onClick={()=>handleGetProductDetails(product._id)}>
           <div className="relative">
             <img
             src={product?.image}
@@ -36,14 +36,18 @@ function ShoppingProductTile({product}){
               
             </div>
           </CardContent>
-          <CardFooter>
-            <button className="w-full">Add to Cart</button>
-          </CardFooter>
+          
         </div>
+        <CardFooter>
+            <button onClick={()=>handleAddtoCart(product?._id)} className="w-full">Add to Cart</button>
+          </CardFooter>
 
       </Card>
   )
 }
+
+
+
 
 
 export default ShoppingProductTile
