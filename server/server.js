@@ -19,9 +19,14 @@ const commonFeatureRouter = require('./routes/common/feature-routes')
 
 //create database connection
 
-mongoose.connect(process.env.MONGO_URL)
-.then(()=>console.log("mongoDb connected"))
-.catch(error=>console.log(error))
+mongoose.connect(process.env.MONGO_URL, {
+  authMechanism: 'SCRAM-SHA-256', // Uses a modern auth method that skips saslprep
+  authMechanismProperties: {
+    SASL_PREP: false // Explicitly disables saslprep (extra safety)
+  }
+})
+.then(() => console.log("MongoDB connected"))
+.catch(error => console.log("Connection error:", error))
 
 
 
