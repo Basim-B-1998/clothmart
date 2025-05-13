@@ -13,6 +13,7 @@ function ProductImageUpload({
   uploadedImageUrl,
   setUploadedImageUrl,
   setImageLoadingState,
+  isCustomStyling = false,
 }){
 
 const inputRef = useRef(null)
@@ -46,7 +47,7 @@ async function uploadImageToCloudinary(){
   setImageLoadingState(true)
   const data=new FormData()
   data.append('my_file',imageFile)
-  const response=await axios.post('http://localhost:5000/api/admin/products/upload-image',data)
+  const response=await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/products/upload-image`,data)
   if (response?.data?.success){
  setUploadedImageUrl(response.data.result.url)
  setImageLoadingState(false)
@@ -58,7 +59,7 @@ if(imageFile !== null)  uploadImageToCloudinary()
 },[imageFile])
 
   return( 
-    <div className="w-full max-w-md mx-auto mt-4">
+    <div className={`w-full mt-4 ${isCustomStyling ? '' : 'max-w-md mx-auto'}`}>
       <Label className="text-lg font-semibold ml-5 block">Upload Image</Label>
     <div onDragOver={handleDragOver} onDrop={handleDrop} className="border-2 border-dashed rounded-lg p-4">
       <Input id="image-upload" type="file" className="hidden" ref={inputRef} onChange={handleImageFileChange}/>

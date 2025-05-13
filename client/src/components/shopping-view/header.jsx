@@ -1,5 +1,5 @@
 import { House, LogOut, Menu ,ShoppingCart, User} from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLoaderData, useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { Sheet,SheetContent,SheetTrigger } from "@/components/ui/sheet"
 import { useDispatch, useSelector } from "react-redux"
 import { shoppingViewHeaderMenuItems } from "@/config"
@@ -16,15 +16,20 @@ import { Label } from "../ui/label"
 function MenuItems(){
 
   const navigate=useNavigate()
+  const location=useLocation()
+  const [searchParams,setSearchParams] = useSearchParams()
 
   function handleNavigate(getcurrentMenuItem){
     sessionStorage.removeItem('filters')
-    const currentFilter = getcurrentMenuItem.id !== 'home' ? 
-    {
+    const currentFilter = getcurrentMenuItem.id !== 'home' && getcurrentMenuItem.id !=='products' && getcurrentMenuItem.id !=='search'
+    ? {
       category : [getcurrentMenuItem.id]
   }  : null
   sessionStorage.setItem('filters',JSON.stringify(currentFilter))
-  navigate(getcurrentMenuItem.path)
+  const basePath = getcurrentMenuItem.path;
+  const query = currentFilter ? `?category=${getcurrentMenuItem.id}` : '';
+
+  navigate(`${basePath}${query}`);
 }
 
   return <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
@@ -56,8 +61,10 @@ function HeaderRightContent(){
       onClick={()=>setOpenCartSheet(true)}
        variant="outline" 
        size="icon"
+       className="relative"
     >
      <ShoppingCart className="w-6 h-6"/> 
+     <span className="absolute top-[-5px] right-[2px] font-bold text-sm text-red-500">{cartItems?.items?.length || 0}</span>
      <span className="sr-only">User cart</span>
     </Button> 
     <UserCartWrapper 

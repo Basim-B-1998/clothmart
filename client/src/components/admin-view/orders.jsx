@@ -2,12 +2,28 @@ import { Card, CardContent, CardHeader, CardTitle  } from "../ui/card"
 import { Dialog } from "../ui/dialog";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import AdminOrderDetailsView from '../../components/admin-view/order-details'
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllOrdersForAdmin, resetOrderDetails ,getOrderDetailsForAdmin} from "@/store/admin/order-slice";
+import { Badge } from "../ui/badge";
 
 
 function AdminOrdersView(){
 
  const [openDetailsDialog,setOpenDetailsDialog] = useState(false)
+ const {orderList,orderDetails}=useSelector(state=>state.adminOrder)
+ const dispatch=useDispatch()
+
+ function handleFetchOrderDetails(getId){
+  dispatch(getAllOrdersForAdmin())
+ }
+
+ useEffect(()=>{
+  dispatch(getAllOrdersForAdmin())
+ },[dispatch])
+
+ console.log(orderList,'orderList');
+ 
 
   return <Card>
   <CardHeader>
@@ -27,18 +43,39 @@ function AdminOrdersView(){
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell>123456</TableCell>
-            <TableCell>11/3/2024</TableCell>
-            <TableCell>In Process</TableCell>
-            <TableCell>$999 </TableCell>
-            <TableCell>
-              <Dialog open={openDetailsDialog} onOpenChange={setOpenDetailsDialog}>
-              <button onClick={()=>setOpenDetailsDialog(true)}>View Details</button>
-              <AdminOrderDetailsView/>
-              </Dialog>
-            </TableCell>
-          </TableRow>
+        {
+            orderList && orderList.length > 0 ?
+            orderList.map(orderItem=><TableRow>
+              <TableCell>{orderItem?._id}</TableCell>
+              <TableCell>{orderItem?.orderDate.split('T')[0]}</TableCell>
+              <TableCell>
+                <Badge
+                 className={`py-1 px-3 rounded-3xl ${
+                  orderItem?.orderStatus==='confirmed' 
+                  ? 'bg-green-500'
+                   : orderItem?.orderStatus==='rejected'
+                   ? 'bg-red-600'
+                   :'bg-black'
+                    }`}>
+                      {orderItem?.orderStatus}
+                </Badge>
+              </TableCell>
+              <TableCell>{orderItem?.totalAmount}</TableCell>
+              <TableCell>
+                <Dialog 
+                   open={openDetailsDialog} 
+                   onOpenChange={()=>{setOpenDetailsDialog(false)
+                    dispatch(resetOrderDetails())
+                   }}
+                >
+                <button  onClick={()=>handleFetchOrderDetails(orderItem?._id)}>View Details</button>
+                <AdminOrderDetailsView orderDetails={orderDetails}/>
+                </Dialog>
+  
+              </TableCell>
+            </TableRow> )
+            :null
+          }
         </TableBody>
       </Table>
     </CardContent>
@@ -46,3 +83,5 @@ function AdminOrdersView(){
 }
 
 export default AdminOrdersView
+
+

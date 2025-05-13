@@ -19,6 +19,9 @@ import UnauthPage from './pages/pages/unauth-page'
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuth } from './store/auth-slice'
 import { Skeleton } from "@/components/ui/skeleton"
+import PaypalReturnPage from './pages/pages/shopping-view/paypal-return'
+import PaymentsuccessPage from './pages/pages/shopping-view/payment-success'
+import SearchProducts from './pages/pages/shopping-view/search'
 
 
 
@@ -43,6 +46,11 @@ if (isLoading)  return <Skeleton className="w-[600px] h-[600px]" />
     
 
 <Routes>
+  <Route
+  path="/" element={
+    <CheckAuth isAuthenticated={isAuthenticated} user={user}>  
+      </CheckAuth>}
+  />
   <Route path='/auth' element={
     <CheckAuth isAuthenticated={isAuthenticated} user={user}>
       <AuthLayout/>
@@ -68,6 +76,9 @@ if (isLoading)  return <Skeleton className="w-[600px] h-[600px]" />
     <Route path="account" element={<ShoppingAccount/>}/>
     <Route path="checkout" element={<ShoppingCheckout/>}/>
     <Route path="listing" element={<ShoppingListing/>}/>
+    <Route path="paypal-return" element={<PaypalReturnPage/>}/>
+    <Route path="payment-success" element={<PaymentsuccessPage/>}/>
+    <Route path="search" element={<SearchProducts/>}/>
 </Route>
     <Route path="*" element={<NotFound/>}/> 
     <Route path="unauth-page" element={<UnauthPage/>}/>

@@ -4,7 +4,8 @@ import CommonForm from "@/components/common/form";
 import { Button } from "@/components/ui/button"
 import { Sheet,SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { addProductFormElements } from "@/config";
-import { addNewProduct, deleteProduct, editProduct, fetchAllProducts } from "@/store/admin/products-slice";
+import { fetchAllProducts } from "@/store/admin/product-slice";
+import { addNewProduct, deleteProduct, editProduct,  } from "@/store/admin/product-slice";
 import { Description } from "@radix-ui/react-dialog";
 import { Fragment, useEffect } from "react"
 import { useState } from "react";
@@ -36,6 +37,7 @@ const [imageFile,setImageFile]=useState(null)
 const [uploadedImageUrl,setUploadedImageUrl]=useState("")
 const [imageLoadingState,setImageLoadingState]=useState(false)
 const [currentEditedId,setCurrentEditedId] = useState(null)
+
 const {productList}=useSelector(state=>state.adminProducts)
 const dispatch=useDispatch()
 
@@ -136,7 +138,7 @@ console.log(productList,"ProductList")  ;
          setUploadedImageUrl={setUploadedImageUrl}
          setImageLoadingState={setImageLoadingState}
          imageLoadingState={imageLoadingState}
-         currentEditedId={currentEditedId}
+         isEditMode={currentEditedId !== null}
          />
       <div className="py-6 ml-5">
         <CommonForm 
