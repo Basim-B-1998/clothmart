@@ -13,6 +13,7 @@ const addAddress = async(req , res)=> {
       })
     }
 
+    //creating new
     const newlyCreatedAddress = new Address({
       userId,address,city,pincode,phone,notes
     }) 
