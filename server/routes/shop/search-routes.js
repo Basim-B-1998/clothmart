@@ -1,8 +1,9 @@
-const express=require("express")
-const { searchProducts}=require("../../controllers/shop/search-controller")
+const express = require("express");
 
-const router=express.Router()
+const { searchProducts } = require("../../controllers/shop/search-controller");
 
-router.get('/:keyword',searchProducts)
+const router = express.Router();
 
-module.exports=router
+router.get("/:keyword", searchProducts);
+
+module.exports = router;

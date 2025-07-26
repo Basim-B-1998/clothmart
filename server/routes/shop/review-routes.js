@@ -1,10 +1,13 @@
+const express = require("express");
 
-const express=require("express")
-const { addProductReview,getProductreviews }=require("../../controllers/shop/product-review-controller")
+const {
+  addProductReview,
+  getProductReviews,
+} = require("../../controllers/shop/product-review-controller");
 
-const router=express.Router()
+const router = express.Router();
 
-router.post('/add',addProductReview)
-router.get('/:productId',getProductreviews)  
+router.post("/add", addProductReview);
+router.get("/:productId", getProductReviews);
 
-module.exports=router
+module.exports = router;

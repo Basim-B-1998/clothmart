@@ -1,11 +1,9 @@
-const paypal = require('paypal-rest-sdk')
+const paypal = require("paypal-rest-sdk");
 
 paypal.configure({
-  mode : 'sandbox',
-  client_id : process.env.PALYPAL_CLIENT_ID,
-  client_secret:
-          process.env.PALYPAL_CLIENT_SECRET
-})
+  mode: "sandbox",
+  client_id: process.env.PALYPAL_CLIENT_ID,
+  client_secret: process.env.PALYPAL_CLIENT_SECRET
+});
 
-
-module.exports = paypal
+module.exports = paypal;
