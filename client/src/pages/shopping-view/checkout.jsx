@@ -7,6 +7,10 @@ import { useState } from "react";
 import { createNewOrder } from "@/store/shop/order-slice";
 import { Navigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { useStripe, useElements } from "@stripe/react-stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import StripeCheckout from "@/components/shopping-view/stripecheckout";
 
 function ShoppingCheckout() {
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -14,6 +18,7 @@ function ShoppingCheckout() {
   const { approvalURL } = useSelector((state) => state.shopOrder);
   const [currentSelectedAddress, setCurrentSelectedAddress] = useState(null);
   const [isPaymentStart, setIsPaymemntStart] = useState(false);
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
   const dispatch = useDispatch();
   const { toast } = useToast();
 
@@ -123,6 +128,13 @@ function ShoppingCheckout() {
                 ? "Processing Paypal Payment..."
                 : "Checkout with Paypal"}
             </Button>
+            <Elements stripe={stripePromise}>
+  <StripeCheckout
+    amount={totalCartAmount * 100}
+    selectedAddress={currentSelectedAddress} // ✅ this is what was missing
+  />
+</Elements>
+
           </div>
         </div>
       </div>
