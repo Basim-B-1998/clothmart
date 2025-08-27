@@ -51,7 +51,7 @@ export default function StripeCheckout({ amount, address }) {
         alert("Payment failed: " + result.error.message);
       } else if (result.paymentIntent.status === "succeeded") {
         console.log("✅ Payment succeeded!");
-        alert("Payment succeeded!");
+     
 
         // ✅ Clear cart and redirect
         dispatch(clearCart()); // Redux way — OR use localStorage.clear() based on your setup
